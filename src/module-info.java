@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author karol
+ *
+ */
+module KCBank {
+}
