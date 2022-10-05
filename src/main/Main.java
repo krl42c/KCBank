@@ -1,6 +1,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
 
 import components.Account;
@@ -14,8 +16,11 @@ public class Main {
 		//displayTable(list);
 		
 		var account_list = loadAccounts(list);
-		displayAccounts(account_list);
+		//displayAccounts(account_list);
 		
+		var htable = createHashTable(account_list);
+		displayHashTable(htable);
+	
 	}
 	
 	// 1.1.2 Creation of main class for tests
@@ -42,7 +47,6 @@ public class Main {
 	// 1.2.3 Creation of the tablea account
 	public static List<Account> loadAccounts(List<Client> client_list) {
 		var account_list = new ArrayList<Account>();
-		
 		for(Client client : client_list) {
 			// Using the same label as this is just for testing 
 			var current_account = new CurrentAccount("CurrentAccount", client);
@@ -61,6 +65,31 @@ public class Main {
 	public static void displayAccounts(List<Account> account_list) {
 		for(Account account : account_list) {
 			System.out.println(account.toString());
+		}
+	}
+	
+	// 1.3.1 Adaptation of the table of accounts
+	public static Hashtable<Integer, Account> createHashTable(List<Account> account_list) {
+		var htable = new Hashtable<Integer,Account>();
+		for(Account account : account_list) {
+			htable.put(account.getAccount_no(), account);
+		}
+		return htable;
+	}
+	
+	// 1.3.1 Adaptation of the table of accounts
+	public static void displayHashTable(Hashtable<Integer, Account> htable) {
+		// Get a sorted list of keys
+		var key_list = new ArrayList<Integer>();
+		
+		Collection<Account> account_col =  htable.values();
+		List<Account> account_list = new ArrayList(account_col);
+		
+		account_list.sort((o1, o2) -> Double.compare(o2.getBalance(), o1.getBalance()));
+		
+		// Display map with sorted keys
+		for(int i = 0; i < account_list.size(); i++) {
+			System.out.println(htable.get(account_list.get(i).getAccount_no()));
 		}
 	}
 }
