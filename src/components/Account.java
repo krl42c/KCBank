@@ -53,5 +53,4 @@ public abstract class Account {
 	public String toString() {
 		return this.label + " " + this.client.toString() + " " + this.account_no;
 	}
-	}
 }
