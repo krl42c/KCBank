@@ -5,7 +5,8 @@ public class Client {
 	
 	private String name;
 	private String last_name;
-	private static int client_number = 0; 
+	private static int count = 0; 
+	private int client_number;
 	
 	public String getName() {
 		return name;
@@ -23,24 +24,24 @@ public class Client {
 		this.last_name = last_name;
 	}
 
-	public static int getClient_number() {
+	public int getClient_number() {
 		return client_number;
 	}
 
-	public static void setClient_number(int client_number) {
-		Client.client_number = client_number;
+	public void setClient_number(int client_number) {
+		this.client_number = client_number;
 	}
 
 	
 	public Client(String name, String last_name ) {
 		this.name = name;
 		this.last_name = last_name;
-		Client.client_number++;
+		this.client_number = ++count;
 	}
 	
 	@Override
 	public String toString() {
-		return Client.client_number + " " + this.name + " " + this.last_name;
+		return client_number + " " + this.name + " " + this.last_name;
 	}
 	
 }
