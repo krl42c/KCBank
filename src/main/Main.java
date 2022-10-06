@@ -23,14 +23,15 @@ import components.Transfert;
 public class Main {
 	public static void main(String args[]) {
 		var list = createTable(6);
-		//displayTable(list);
+		displayTable(list);
 		
 		var account_list = loadAccounts(list);
-		//displayAccounts(account_list);
+		displayAccounts(account_list);
 		
 		var htable = createHashTable(account_list);
 		displayHashTable(htable);
-	
+		
+		updateAccountFlows(htable, loadFlow(htable));
 	}
 	
 	// 1.1.2 Creation of main class for tests
@@ -121,11 +122,20 @@ public class Main {
 	}
 	
 	// 1.3.5 Updating accounts
-	public static void updateAccountFlows(Hashtable<Integer,Account> hmap, List<Account> account_list) {
-	
-		
+	public static void updateAccountFlows(Hashtable<Integer,Account> hmap, List<Flow> flow_list) {
+		// Update accounts
+		flow_list.forEach(f -> {
+			hmap.get(f.getTarget_account_no()).setBalance(f);
+		});
 		
 		// List of accounts with negative Flows
-		List<Account> negative_accounts = hmap.values().stream().filter(acc -> acc.getBalance() < 0).collect(Collectors.toList());
+		List<Account> negative_accounts = hmap.values()
+				.stream()
+				.filter(acc -> acc.getBalance() < 0)
+				.collect(Collectors.toList());
+		
+		negative_accounts.stream().forEach((acc) -> {
+			System.out.println("Account with id " + acc.getAccount_no() + " has negative balance " + acc.getBalance());
+		});
 	}
 }
