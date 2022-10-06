@@ -1,5 +1,7 @@
 package main;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -10,6 +12,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import components.Account;
 import components.Client;
@@ -32,6 +44,9 @@ public class Main {
 		displayHashTable(htable);
 		
 		updateAccountFlows(htable, loadFlow(htable));
+		
+		List<Account> a = loadXMLAccounts(Path.of("accounts.xml"));
+		a.forEach(System.out::println);
 	}
 	
 	// 1.1.2 Creation of main class for tests
@@ -137,5 +152,70 @@ public class Main {
 		negative_accounts.stream().forEach((acc) -> {
 			System.out.println("Account with id " + acc.getAccount_no() + " has negative balance " + acc.getBalance());
 		});
+	}
+	
+	// 2.1 JSON file of flows
+	public static List<Flow> loadJsonFlows(Path path) {
+		return null;
+	}
+	
+	public static List<Account> loadXMLAccounts(Path path) {
+		List<Account> account_list = new ArrayList<Account>();
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(path.toFile());
+			
+	        doc.getDocumentElement().normalize();
+
+	        System.out.println("Root Element :" + doc.getDocumentElement().getNodeName());
+	        System.out.println("------");
+	        
+			NodeList list = doc.getElementsByTagName("account");
+			
+			for(int i = 0; i < list.getLength(); i++) {
+				Node node = list.item(i);
+				
+				if(node.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) node;
+					String id = element.getAttribute("id");
+	                String label = element.getElementsByTagName("label").item(0).getTextContent();
+	                String balance = element.getElementsByTagName("balance").item(0).getTextContent();
+	                String type = element.getElementsByTagName("type").item(0).getTextContent();
+	                
+	                
+	                
+	                NodeList client_node = element.getElementsByTagName("client");
+	                Element client_element = (Element) client_node.item(0);
+	                String name = client_element.getElementsByTagName("name").item(0).getTextContent();
+	                String last_name = client_element.getElementsByTagName("last_name").item(0).getTextContent();
+	                String client_number = client_element.getAttribute("id");
+	                
+	                var client = new Client(name, last_name);
+	                client.setClient_number(Integer.parseInt(client_number));
+	                
+	                Account account = null;
+	                if(type.equals("CurrentAccount")) {
+	                	account = new CurrentAccount(label, client);
+	                }
+	                if(type.equals("SavingsAccount"))
+	                	account = new SavingsAccount(label, client);
+	                
+	                account_list.add(account);
+				}
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return account_list;
 	}
 }
