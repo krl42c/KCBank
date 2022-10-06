@@ -1,0 +1,24 @@
+{
+	flows: [
+		{
+			"type":"credit",
+			"comment":"null",
+			"id": 5,
+			"amount": 20.0,
+			"target_account_no": 10,
+			"effect" : false,
+			"flow_date" : "15/10/2022" 
+		},
+		{
+			"type" : "debit",
+			"comment" : "comm2",
+			"id": 10,
+			"amount": 100.0,
+			"target_account_no": 2,
+			"effect": true,
+			"flow_date" : "10/10/2022" 
+		}
+	]
+}
+
+

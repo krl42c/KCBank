@@ -5,8 +5,9 @@ public class Client {
 	
 	private String name;
 	private String last_name;
-	private static int count = 0; 
 	private int client_number;
+	
+	private static int count = 0; 
 	
 	public String getName() {
 		return name;

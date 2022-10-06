@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<accounts>
+	<account id="1">
+	<type>CurrentAccount</type>
+	<label>Hola</label>
+	<balance>5</balance>
+	<client id="50">
+		<name> Karol </name>
+		<last_name> Ciechlecki </last_name>
+	</client>
+    </account>
+    <account id="2">
+	<type>SavingsAccount</type>
+	<label>Label2</label>
+	<balance>10</balance>
+	<client id="20">
+		<name> Andrea </name>
+		<last_name> Guerrero </last_name>
+	</client>
+    </account>
+</accounts>

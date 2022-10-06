@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<accounts>
+    <account>
+	<label>Hola</label>
+	<account_no> 1 </account_no>
+        <balance>5</balance>
+    </account>
+    <account>
+	<label>Label2</label>
+	<account_no> 2 </account_no>
+	<balance>10</balance>
+    </account>
+</accounts>
