@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import components.Account;
 import components.Client;
@@ -46,9 +49,7 @@ public class Main {
 	
 	// 1.1.2 Creation of main class for tests
 	public static void displayTable(List<Client> list) {
-		for(var elem : list) {
-			System.out.println(elem.toString());
-		}
+		Stream.of(list).forEach(System.out::println);
 	}
 
 	// 1.2.3 Creation of the tablea account
@@ -70,9 +71,7 @@ public class Main {
 
 	// 1.2.3 Creation of the tablea account
 	public static void displayAccounts(List<Account> account_list) {
-		for(Account account : account_list) {
-			System.out.println(account.toString());
-		}
+		Stream.of(account_list).forEach(System.out::println);
 	}
 	
 	// 1.3.1 Adaptation of the table of accounts
@@ -86,23 +85,14 @@ public class Main {
 	
 	// 1.3.1 Adaptation of the table of accounts
 	public static void displayHashTable(Hashtable<Integer, Account> htable) {
-		// Get a sorted list of keys
-		var key_list = new ArrayList<Integer>();
-		
-		Collection<Account> account_col =  htable.values();
-		List<Account> account_list = new ArrayList(account_col);
-		
-		account_list.sort((o1, o2) -> Double.compare(o2.getBalance(), o1.getBalance()));
-		
-		// Display map with sorted keys
-		for(int i = 0; i < account_list.size(); i++) {
-			System.out.println(htable.get(account_list.get(i).getAccount_no()));
-		}
+		List<Account> list = htable.values().stream().sorted(Comparator.comparingDouble(Account::getBalance)).collect(Collectors.toList());
+		Stream.of(list).forEach(System.out::println);
 	}
 	
 	// 1.3.4 Creation of the flow array
 	public static List<Flow> loadFlow(Hashtable<Integer, Account> htable) {
 		var flow_list = new ArrayList<Flow>();
+		
 		// Get current date + 2 days
 		Date date = new Date();
         LocalDateTime local_date = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -128,5 +118,14 @@ public class Main {
 		var transfert = new Transfert("no", 0, 50.0, htable.get(1).getAccount_no(), false, final_date, htable.get(2).getAccount_no());
 		flow_list.add(transfert);
 		return flow_list;
+	}
+	
+	// 1.3.5 Updating accounts
+	public static void updateAccountFlows(Hashtable<Integer,Account> hmap, List<Account> account_list) {
+	
+		
+		
+		// List of accounts with negative Flows
+		List<Account> negative_accounts = hmap.values().stream().filter(acc -> acc.getBalance() < 0).collect(Collectors.toList());
 	}
 }
