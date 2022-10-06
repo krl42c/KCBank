@@ -1,7 +1,13 @@
 package main;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -17,6 +23,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -47,6 +56,8 @@ public class Main {
 		
 		List<Account> a = loadXMLAccounts(Path.of("accounts.xml"));
 		a.forEach(System.out::println);
+		
+		var json = loadJsonFlows(Path.of("flows.json"));
 	}
 	
 	// 1.1.2 Creation of main class for tests
@@ -156,7 +167,51 @@ public class Main {
 	
 	// 2.1 JSON file of flows
 	public static List<Flow> loadJsonFlows(Path path) {
-		return null;
+		var flow_list = new ArrayList<Flow>();
+		Flow flow = null;
+		try {
+			File file = new File(path.toString());
+            String content = new String(Files.readAllBytes(Paths.get(file.toURI())));
+			JSONObject json = new JSONObject(content);
+			JSONArray json_array = json.getJSONArray("flows");
+			
+			for(int i = 0; i < json_array.length(); i++) {
+				JSONObject json_data = json_array.getJSONObject(i);
+				String type = json_data.getString("type");
+				String comment = json_data.getString("comment");
+				int id = json_data.getInt("id");
+				double amount = json_data.getDouble("amount");
+				int target_account_no = json_data.getInt("target_account_no");
+				boolean effect = json_data.getBoolean("effect");
+				Date flow_date = new SimpleDateFormat("dd/MM/yyyy").parse(json_data.getString("flow_date"));
+				
+				if(type.equals("credit")) {
+					flow = new Credit(comment,id,amount,target_account_no, effect, flow_date);
+				}
+				
+				if(type.equals("debit")) {
+					flow = new Debit(comment,id,amount,target_account_no, effect, flow_date);
+				}
+				
+				if(type.equals("transfer")) {
+					int account_no = json_data.getInt("account_no");
+					flow = new Transfert(comment,id,amount,target_account_no, effect, flow_date, account_no);
+				}
+				
+				flow_list.add(flow);
+				
+			}
+
+		} catch (IOException e)  {
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return flow_list;
 	}
 	
 	public static List<Account> loadXMLAccounts(Path path) {
@@ -184,7 +239,6 @@ public class Main {
 	                String label = element.getElementsByTagName("label").item(0).getTextContent();
 	                String balance = element.getElementsByTagName("balance").item(0).getTextContent();
 	                String type = element.getElementsByTagName("type").item(0).getTextContent();
-	                
 	                
 	                
 	                NodeList client_node = element.getElementsByTagName("client");
